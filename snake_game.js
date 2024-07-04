@@ -19,18 +19,32 @@ let foodY;
 let gameOver = false;
 
 window.onload = function () {
-	// Set board height and width
-	board = document.getElementById("board");
-	board.height = total_row * blockSize;
-	board.width = total_col * blockSize;
-	context = board.getContext("2d");
+    // Set board height and width
+    board = document.getElementById("board");
+    board.height = total_row * blockSize;
+    board.width = total_col * blockSize;
+    context = board.getContext("2d");
 
-	placeFood();
-	document.addEventListener("keyup", changeDirection); //for movements
-	// Set snake speed
-	setInterval(update, 1000 / 10);
+    placeFood();
+    document.addEventListener("keyup", changeDirection); //for movements
+    // Set snake speed
+    setInterval(update, 1000 / 10);
+
+    // Add event listener for the new game button
+    let newGameButton = document.getElementById("newGameButton");
+    newGameButton.addEventListener("click", startNewGame);
 }
 
+function startNewGame() {
+    // Reset all game variables to initial state
+    snakeX = blockSize * 5;
+    snakeY = blockSize * 5;
+    speedX = 0;
+    speedY = 0;
+    snakeBody = [];
+    gameOver = false;
+    placeFood();
+}
 function update() {
 	if (gameOver) {
 		return;
@@ -109,55 +123,6 @@ function changeDirection(e) {
 		speedX = 1;
 		speedY = 0;
 	}
-}
-
-// Add touch event listeners
-document.addEventListener("touchstart", handleTouchStart, false);
-document.addEventListener("touchmove", handleTouchMove, false);
-
-// Variables to track touch positions
-let touchStartX = 0;
-let touchStartY = 0;
-
-function handleTouchStart(event) {
-    touchStartX = event.touches[0].clientX;
-    touchStartY = event.touches[0].clientY;
-}
-
-function handleTouchMove(event) {
-    if (!touchStartX || !touchStartY) {
-        return;
-    }
-    let touchEndX = event.touches[0].clientX;
-    let touchEndY = event.touches[0].clientY;
-
-    let deltaX = touchEndX - touchStartX;
-    let deltaY = touchEndY - touchStartY;
-
-    // Determine direction based on the greatest delta
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Horizontal swipe
-        if (deltaX > 0 && speedX != -1) {
-            speedX = 1;
-            speedY = 0;
-        } else if (deltaX < 0 && speedX != 1) {
-            speedX = -1;
-            speedY = 0;
-        }
-    } else {
-        // Vertical swipe
-        if (deltaY > 0 && speedY != -1) {
-            speedX = 0;
-            speedY = 1;
-        } else if (deltaY < 0 && speedY != 1) {
-            speedX = 0;
-            speedY = -1;
-        }
-    }
-
-    // Reset touch start positions for the next move
-    touchStartX = 0;
-    touchStartY = 0;
 }
 
 // Randomly place food
