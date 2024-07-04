@@ -111,6 +111,55 @@ function changeDirection(e) {
 	}
 }
 
+// Add touch event listeners
+document.addEventListener("touchstart", handleTouchStart, false);
+document.addEventListener("touchmove", handleTouchMove, false);
+
+// Variables to track touch positions
+let touchStartX = 0;
+let touchStartY = 0;
+
+function handleTouchStart(event) {
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+}
+
+function handleTouchMove(event) {
+    if (!touchStartX || !touchStartY) {
+        return;
+    }
+    let touchEndX = event.touches[0].clientX;
+    let touchEndY = event.touches[0].clientY;
+
+    let deltaX = touchEndX - touchStartX;
+    let deltaY = touchEndY - touchStartY;
+
+    // Determine direction based on the greatest delta
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal swipe
+        if (deltaX > 0 && speedX != -1) {
+            speedX = 1;
+            speedY = 0;
+        } else if (deltaX < 0 && speedX != 1) {
+            speedX = -1;
+            speedY = 0;
+        }
+    } else {
+        // Vertical swipe
+        if (deltaY > 0 && speedY != -1) {
+            speedX = 0;
+            speedY = 1;
+        } else if (deltaY < 0 && speedY != 1) {
+            speedX = 0;
+            speedY = -1;
+        }
+    }
+
+    // Reset touch start positions for the next move
+    touchStartX = 0;
+    touchStartY = 0;
+}
+
 // Randomly place food
 function placeFood() {
 
